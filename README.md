@@ -3,7 +3,7 @@ Inventory Management System
 
 A comprehensive inventory management system built with Laravel (backend) and Nuxt.js (frontend) for managing suppliers, gadgets, stock inventory, purchase orders, and transactions.
 
-## 🚀 Features
+## Features
 
 ### Authentication & User Management
 - **Admin Registration**: Self-service admin account creation with secure password validation
@@ -62,7 +62,7 @@ A comprehensive inventory management system built with Laravel (backend) and Nux
 - **Soft Deletes**: Safe deletion with recovery capability for gadgets
 - **Performance Optimizations**: Database indexes and query optimizations
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Laravel 12** - PHP Framework
@@ -76,14 +76,14 @@ A comprehensive inventory management system built with Laravel (backend) and Nux
 - **Pinia** - State Management
 - **Axios** - HTTP Client
 
-## 📋 Prerequisites
+## Prerequisites
 
 - PHP 8.2 or higher
 - Composer
 - Node.js 18+ and npm
 - MySQL Database
 
-## 🔧 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -119,7 +119,7 @@ A comprehensive inventory management system built with Laravel (backend) and Nux
    - Update `.env` file with your database credentials
    - Set `API_BASE_URL` in `frontend/.env` if needed (defaults to `http://localhost:8000/api`)
 
-## 📚 Documentation
+## Documentation
 
 This README provides comprehensive documentation for setting up and running the GadgetHub Inventory Management System. The documentation includes:
 
@@ -164,7 +164,7 @@ For a quick start, follow these essential steps:
 
 For detailed setup instructions, refer to the [Installation](#-installation) and [Running the Application](#-running-the-application) sections below.
 
-## 🚀 Running the Application
+## Running the Application
 
 ### Development Mode
 
@@ -194,7 +194,7 @@ npm run build
 php artisan serve
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Gadgethub-IMS/
@@ -232,7 +232,7 @@ Gadgethub-IMS/
     └── seeders/          # Database seeders
 ```
 
-## 🔐 API Endpoints
+## API Endpoints
 
 ### Authentication (Public)
 - `POST /api/register` - Register a new admin account
@@ -265,7 +265,7 @@ Gadgethub-IMS/
 - `/api/gadgets/top-selling` - Top selling gadgets
 - `/api/categories/{id}/gadgets` - Get gadgets by category
 
-## 📊 Features Overview
+## Features Overview
 
 ### Authentication
 
@@ -342,7 +342,7 @@ The Registration Page enables new administrators to create their accounts with s
 - Activity log with admin tracking
 - Monthly purchase trends
 
-## 🎨 UI/UX
+## UI/UX
 
 - **Modern Design**: Clean, professional interface with gradient headers
 - **Responsive Layout**: Mobile-first approach with full tablet and desktop support
