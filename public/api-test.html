@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            font-family: monospace;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+        
+        .success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .token-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.logged-in {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status.logged-out {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .endpoint-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .endpoint-btn {
+            background: #6c757d;
+            font-size: 14px;
+            padding: 8px 16px;
+        }
+        
+        .endpoint-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 API Test Interface</h1>
+        
+        <!-- Login Section -->
+        <div class="section">
+            <h2>1. Authentication</h2>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="username" placeholder="Enter your admin username" value="admin">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            <button onclick="login()">Login</button>
+            <button onclick="logout()" id="logoutBtn" disabled>Logout</button>
+            <span id="loginStatus" class="status logged-out">Not Logged In</span>
+            <div id="tokenDisplay" class="token-display" style="display: none;">
+                <strong>Token:</strong> <span id="tokenValue"></span>
+            </div>
+            <div id="loginResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- API Endpoints Section -->
+        <div class="section">
+            <h2>2. API Endpoints</h2>
+            <p style="margin-bottom: 15px; color: #666;">Click any endpoint to test it (requires login):</p>
+            
+            <div class="endpoint-list">
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/get-user')">Get User Info</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/gadgets')">Get All Gadgets</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/categories')">Get Categories</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/brands')">Get Brands</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/suppliers')">Get Suppliers</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/stocks')">Get Stocks</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/stocks/low')">Low Stock Items</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/stocks/out')">Out of Stock</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/stocks/value')">Stock Value</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/transactions')">Get Transactions</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/dashboard/analytics')">Dashboard Analytics</button>
+                <button class="endpoint-btn" onclick="testEndpoint('GET', '/api/gadgets/top-selling')">Top Selling Gadgets</button>
+            </div>
+            
+            <div id="endpointResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Custom Request Section -->
+        <div class="section">
+            <h2>3. Custom API Request</h2>
+            <div class="form-group">
+                <label>Method:</label>
+                <select id="customMethod">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="PATCH">PATCH</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Endpoint:</label>
+                <input type="text" id="customEndpoint" placeholder="/api/gadgets" value="/api/gadgets">
+            </div>
+            <div class="form-group">
+                <label>Request Body (JSON):</label>
+                <textarea id="customBody" placeholder='{"key": "value"}'></textarea>
+            </div>
+            <button onclick="customRequest()">Send Request</button>
+            <div id="customResponse" class="response" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <script>
+        let apiToken = null;
+        
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const responseDiv = document.getElementById('loginResponse');
+            
+            if (!username || !password) {
+                alert('Please enter username and password');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: username, // Note: API expects 'email' but uses username
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response ' + (data.status === 'success' ? 'success' : 'error');
+                responseDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                
+                if (data.status === 'success' && data.token) {
+                    apiToken = data.token;
+                    document.getElementById('tokenValue').textContent = apiToken;
+                    document.getElementById('tokenDisplay').style.display = 'block';
+                    document.getElementById('loginStatus').textContent = 'Logged In';
+                    document.getElementById('loginStatus').className = 'status logged-in';
+                    document.getElementById('logoutBtn').disabled = false;
+                }
+            } catch (error) {
+                responseDiv.style.display = 'block';
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+        
+        async function logout() {
+            if (!apiToken) return;
+            
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + apiToken,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    apiToken = null;
+                    document.getElementById('tokenDisplay').style.display = 'none';
+                    document.getElementById('loginStatus').textContent = 'Not Logged In';
+                    document.getElementById('loginStatus').className = 'status logged-out';
+                    document.getElementById('logoutBtn').disabled = true;
+                    alert('Logged out successfully');
+                }
+            } catch (error) {
+                alert('Logout error: ' + error.message);
+            }
+        }
+        
+        async function testEndpoint(method, endpoint) {
+            if (!apiToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            const responseDiv = document.getElementById('endpointResponse');
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<pre>Loading...</pre>';
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Authorization': 'Bearer ' + apiToken,
+                        'Accept': 'application/json'
+                    }
+                };
+                
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (response.ok ? 'success' : 'error');
+                responseDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+        
+        async function customRequest() {
+            if (!apiToken) {
+                alert('Please login first!');
+                return;
+            }
+            
+            const method = document.getElementById('customMethod').value;
+            const endpoint = document.getElementById('customEndpoint').value;
+            const body = document.getElementById('customBody').value;
+            const responseDiv = document.getElementById('customResponse');
+            
+            if (!endpoint) {
+                alert('Please enter an endpoint');
+                return;
+            }
+            
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<pre>Loading...</pre>';
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Authorization': 'Bearer ' + apiToken,
+                        'Accept': 'application/json'
+                    }
+                };
+                
+                if (['POST', 'PUT', 'PATCH'].includes(method) && body) {
+                    options.headers['Content-Type'] = 'application/json';
+                    options.body = body;
+                }
+                
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+                
+                responseDiv.className = 'response ' + (response.ok ? 'success' : 'error');
+                responseDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>
+
