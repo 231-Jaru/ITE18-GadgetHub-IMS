@@ -27,12 +27,7 @@ class AuthMiddleware
             return redirect('/login')->with('error', 'Please login to access this page.');
         }
 
-        // Only update last activity if it's been more than 5 minutes
-        // This prevents constant session updates and back button issues
-        $lastActivity = session('last_activity');
-        if (!$lastActivity || now()->diffInMinutes($lastActivity) > 5) {
-            session(['last_activity' => now()]);
-        }
+        // Note: Last activity update is handled by SessionTimeoutMiddleware which runs before this
 
         return $next($request);
     }
