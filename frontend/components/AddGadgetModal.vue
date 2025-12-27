@@ -18,7 +18,7 @@
       >
         <div class="flex items-center justify-center min-h-screen px-4 py-8">
           <div
-            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all"
+            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all relative z-50"
             @click.stop
           >
             <!-- Header -->
@@ -52,7 +52,7 @@
                 />
                 <p v-if="fieldErrors.GadgetName" class="mt-1 text-sm text-red-600">{{ fieldErrors.GadgetName }}</p>
                 <small class="text-gray-500 text-xs mt-1 block">
-                  <i class="fas fa-info-circle mr-1"></i>Use a clear name so its easy to find in search and reports.
+                  <i class="fas fa-info-circle mr-1"></i>Use a clear name so it's easy to find in search and reports.
                 </small>
               </div>
 
@@ -64,19 +64,31 @@
                     <i class="fas fa-tags text-indigo-600 mr-2"></i>Category
                     <span class="text-red-500">*</span>
                   </label>
-                  <select
-                    id="CategoryID"
-                    name="CategoryID"
-                    v-model="form.CategoryID"
-                    class="w-full px-4 py-3 border-2 rounded-lg focus:ring-4 focus:ring-indigo-100 outline-none transition-all"
-                    :class="fieldErrors.CategoryID ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-indigo-500'"
-                    required
-                  >
-                    <option value="">Select Category</option>
-                    <option v-for="category in categories" :key="category.CategoryID" :value="category.CategoryID">
-                      {{ category.CategoryName }}
-                    </option>
-                  </select>
+                  <div class="flex items-center gap-2">
+                    <select
+                      id="CategoryID"
+                      name="CategoryID"
+                      v-model="form.CategoryID"
+                      class="flex-1 h-12 px-4 border-2 rounded-lg focus:ring-4 focus:ring-indigo-100 outline-none transition-all"
+                      :class="fieldErrors.CategoryID ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-indigo-500'"
+                      required
+                      style="height: 48px;"
+                    >
+                      <option value="">Select Category</option>
+                      <option v-for="category in categories" :key="category.CategoryID" :value="category.CategoryID">
+                        {{ category.CategoryName }}
+                      </option>
+                    </select>
+                    <button
+                      type="button"
+                      class="w-12 h-12 flex items-center justify-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex-shrink-0 relative z-10"
+                      :class="{ 'opacity-50 pointer-events-none': showCategoryModal }"
+                      @click="showCategoryModal = true"
+                      title="Add New Category"
+                    >
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
                   <p v-if="fieldErrors.CategoryID" class="mt-1 text-sm text-red-600">{{ fieldErrors.CategoryID }}</p>
                   <small class="text-gray-500 text-xs mt-1 block">
                     <i class="fas fa-info-circle mr-1"></i>Categories group similar gadgets (e.g., Laptops, Phones).
@@ -89,19 +101,31 @@
                     <i class="fas fa-award text-indigo-600 mr-2"></i>Brand
                     <span class="text-red-500">*</span>
                   </label>
-                  <select
-                    id="BrandID"
-                    name="BrandID"
-                    v-model="form.BrandID"
-                    class="w-full px-4 py-3 border-2 rounded-lg focus:ring-4 focus:ring-indigo-100 outline-none transition-all"
-                    :class="fieldErrors.BrandID ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-indigo-500'"
-                    required
-                  >
-                    <option value="">Select Brand</option>
-                    <option v-for="brand in brands" :key="brand.BrandID" :value="brand.BrandID">
-                      {{ brand.BrandName }}
-                    </option>
-                  </select>
+                  <div class="flex items-center gap-2">
+                    <select
+                      id="BrandID"
+                      name="BrandID"
+                      v-model="form.BrandID"
+                      class="flex-1 h-12 px-4 border-2 rounded-lg focus:ring-4 focus:ring-indigo-100 outline-none transition-all"
+                      :class="fieldErrors.BrandID ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-indigo-500'"
+                      required
+                      style="height: 48px;"
+                    >
+                      <option value="">Select Brand</option>
+                      <option v-for="brand in brands" :key="brand.BrandID" :value="brand.BrandID">
+                        {{ brand.BrandName }}
+                      </option>
+                    </select>
+                    <button
+                      type="button"
+                      class="w-12 h-12 flex items-center justify-center bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex-shrink-0 relative z-10"
+                      :class="{ 'opacity-50 pointer-events-none': showBrandModal }"
+                      @click="showBrandModal = true"
+                      title="Add New Brand"
+                    >
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
                   <p v-if="fieldErrors.BrandID" class="mt-1 text-sm text-red-600">{{ fieldErrors.BrandID }}</p>
                   <small class="text-gray-500 text-xs mt-1 block">
                     <i class="fas fa-info-circle mr-1"></i>Choose the manufacturer/brand for this gadget.
@@ -161,6 +185,20 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Add Category Modal -->
+    <AddCategoryModal
+      :show="showCategoryModal"
+      @close="showCategoryModal = false"
+      @created="handleCategoryCreated"
+    />
+
+    <!-- Add Brand Modal -->
+    <AddBrandModal
+      :show="showBrandModal"
+      @close="showBrandModal = false"
+      @created="handleBrandCreated"
+    />
   </Teleport>
 </template>
 
@@ -190,6 +228,8 @@ const categories = ref<any[]>([])
 const brands = ref<any[]>([])
 const submitting = ref(false)
 const error = ref('')
+const showCategoryModal = ref(false)
+const showBrandModal = ref(false)
 const fieldErrors = ref<{
   GadgetName?: string
   CategoryID?: string
@@ -283,8 +323,30 @@ const handleSubmit = async () => {
   }
 }
 
+const handleCategoryCreated = async (category: any) => {
+  // Refresh categories list
+  await fetchCategoriesAndBrands()
+  // Auto-select the newly created category
+  if (category?.CategoryID) {
+    form.value.CategoryID = category.CategoryID
+  }
+  showCategoryModal.value = false
+}
+
+const handleBrandCreated = async (brand: any) => {
+  // Refresh brands list
+  await fetchCategoriesAndBrands()
+  // Auto-select the newly created brand
+  if (brand?.BrandID) {
+    form.value.BrandID = brand.BrandID
+  }
+  showBrandModal.value = false
+}
+
 const handleClose = () => {
   resetForm()
+  showCategoryModal.value = false
+  showBrandModal.value = false
   emit('close')
 }
 
