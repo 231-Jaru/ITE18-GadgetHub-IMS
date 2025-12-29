@@ -241,10 +241,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 
-// Note: Chart.js integration - you may need to install vue-chartjs
-// For now, we'll use a simple approach without the chart component
-// You can add the chart library later if needed
-
 // @ts-ignore - Nuxt auto-imports
 definePageMeta({
   middleware: 'auth'
@@ -299,7 +295,6 @@ const fetchDashboardData = async () => {
   }
 }
 
-// Chart data can be added later with Chart.js if needed
 
 // Format currency
 const formatCurrency = (amount: number) => {
